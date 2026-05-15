@@ -1,0 +1,590 @@
+.vscoPage {
+  padding: 34px 24px 64px;
+  background:
+    linear-gradient(180deg, #ffffff 0, #f6f9ff 42%, #eef5ff 100%);
+}
+
+.vscoShell {
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+.vscoHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.6fr);
+  gap: 22px;
+  margin: 18px 0 24px;
+  align-items: stretch;
+}
+
+.vscoHeroCopy,
+.vscoStatusPanel,
+.vscoInputPanel,
+.vscoResultsPanel,
+.vscoSeoSection {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-soft);
+}
+
+.vscoHeroCopy {
+  position: relative;
+  overflow: hidden;
+  padding: 34px;
+}
+
+.vscoHeroCopy::after {
+  content: "";
+  position: absolute;
+  right: 30px;
+  bottom: 26px;
+  width: 190px;
+  height: 92px;
+  border: 1px solid rgba(34, 103, 244, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(34, 103, 244, 0.14), rgba(24, 198, 209, 0.1)),
+    repeating-linear-gradient(90deg, transparent 0 18px, rgba(34, 103, 244, 0.12) 18px 19px);
+  pointer-events: none;
+}
+
+.vscoMark {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #17213c, #2267f4 55%, #18c6d1);
+  box-shadow: 0 16px 28px rgba(34, 103, 244, 0.18);
+}
+
+.vscoHero h1 {
+  margin: 22px 0 12px;
+  font-size: clamp(42px, 5vw, 72px);
+  line-height: 0.98;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.vscoHero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.vscoHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.vscoHeroActions button,
+.vscoExportActions button,
+.iconTextButton {
+  min-height: 40px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #17213c;
+  font-size: 14px;
+  font-weight: 800;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.vscoHeroActions .primaryAction {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #2267f4, #0f50da);
+  box-shadow: 0 12px 26px rgba(34, 103, 244, 0.22);
+}
+
+.vscoStatusPanel {
+  padding: 28px;
+  align-self: stretch;
+}
+
+.vscoStatusPanel strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.vscoStatusPanel div {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.vscoStatusPanel span {
+  min-height: 42px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #13356e;
+  font-weight: 800;
+  border: 1px solid #dce8ff;
+  border-radius: 7px;
+  background: #f8fbff;
+}
+
+.vscoLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 22px;
+  align-items: start;
+}
+
+.vscoWorkspace {
+  display: grid;
+  gap: 18px;
+  scroll-margin-top: 110px;
+}
+
+.vscoInputPanel,
+.vscoResultsPanel {
+  padding: 24px;
+  scroll-margin-top: 110px;
+}
+
+.panelTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.panelTitleRow h2 {
+  margin: 0 0 5px;
+  font-size: 25px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.panelTitleRow p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.vscoField {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.vscoField > span,
+.vscoToggle {
+  color: #253554;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.vscoUrlInput {
+  min-height: 52px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  border: 1px solid #dbe6fb;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.vscoUrlInput input,
+.vscoField textarea {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  background: transparent;
+  font-size: 15px;
+}
+
+.vscoField textarea {
+  min-height: 184px;
+  padding: 14px;
+  resize: vertical;
+  border: 1px solid #dbe6fb;
+  border-radius: 8px;
+  background: #fbfdff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.vscoControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.vscoToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.vscoToggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.vscoMessage {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  color: #15585f;
+  font-weight: 750;
+  border-radius: 7px;
+  background: #eafcff;
+}
+
+.vscoMessage.error {
+  color: #9b1d31;
+  background: #fff0f2;
+}
+
+.vscoExportActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.vscoExportActions button:disabled {
+  opacity: 0.5;
+}
+
+.vscoResultList {
+  display: grid;
+  gap: 10px;
+}
+
+.vscoResult {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 38px 38px 38px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e3ebfb;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.vscoType {
+  min-height: 32px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  border-radius: 6px;
+  background: #2267f4;
+}
+
+.vscoType.video {
+  background: #17213c;
+}
+
+.vscoType.thumbnail {
+  color: #0d4b55;
+  background: #a9f3fa;
+}
+
+.vscoResult strong {
+  display: block;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vscoResult code {
+  display: block;
+  overflow: hidden;
+  color: #557094;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vscoResult button,
+.vscoResult a {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.vscoEmpty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #6b7893;
+  text-align: center;
+  border: 1px dashed #c7d7ff;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.vscoEmpty strong {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.vscoAside {
+  position: sticky;
+  top: 98px;
+  display: grid;
+  gap: 16px;
+}
+
+.vscoAside a {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.vscoSeoSection {
+  margin-top: 22px;
+  padding: 28px;
+}
+
+.vscoSeoSection h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.vscoSeoSection p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.vscoNotesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.vscoNotesGrid article {
+  padding: 18px;
+  border: 1px solid #e3ebfb;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.vscoNotesGrid h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.vscoFaqGrid {
+  margin-top: 22px;
+}
+
+.vscoFaqGrid > * {
+  min-width: 0;
+}
+
+.vscoFaqGrid pre {
+  overflow: auto;
+  margin: 16px 0 0;
+  padding: 16px;
+  color: #dce8ff;
+  border-radius: 8px;
+  background: #17213c;
+}
+
+@media (max-width: 620px) {
+  .brand strong {
+    font-size: 18px;
+  }
+
+  .brand small {
+    font-size: 9px;
+  }
+
+  .brandMark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .quickFilters button {
+    min-width: 74px;
+  }
+
+  .statsInner {
+    grid-template-columns: 1fr;
+  }
+
+  .statItem {
+    border-right: 0;
+  }
+
+  .categoryList,
+  .toolGrid,
+  .uploadTrust {
+    grid-template-columns: 1fr;
+  }
+
+  .groupHeader,
+  .groupHeader > div {
+    align-items: flex-start;
+  }
+
+  .groupHeader {
+    flex-direction: column;
+  }
+
+  .groupHeader > div {
+    flex-wrap: wrap;
+  }
+
+  .toolCard {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .converterCard {
+    padding: 20px 16px;
+  }
+
+  .converterHead h1 {
+    font-size: 31px;
+  }
+
+  .languageTabs,
+  .radioLine,
+  .checkLine,
+  .tabs {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chooseFile {
+    width: 100%;
+  }
+
+  .settingsBox {
+    padding: 18px 14px;
+  }
+
+  .tutorialSteps div {
+    grid-template-columns: 36px 1fr;
+  }
+
+  .tutorialSteps svg {
+    display: none;
+  }
+
+  .footerInner,
+  .footerBottom,
+  .jsxbinPage {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (max-width: 960px) {
+  .vscoPage {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .vscoHero,
+  .vscoLayout,
+  .vscoNotesGrid,
+  .vscoFaqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .vscoAside {
+    position: static;
+  }
+
+  .vscoHeroCopy::after {
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 620px) {
+  .vscoHeroCopy,
+  .vscoStatusPanel,
+  .vscoInputPanel,
+  .vscoResultsPanel,
+  .vscoSeoSection {
+    padding: 18px;
+  }
+
+  .vscoHero h1 {
+    font-size: 40px;
+  }
+
+  .vscoHeroCopy::after {
+    display: none;
+  }
+
+  .panelTitleRow,
+  .vscoControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .vscoExportActions {
+    justify-content: stretch;
+  }
+
+  .vscoExportActions button,
+  .iconTextButton,
+  .vscoControls .startBtn {
+    width: 100%;
+  }
+
+  .vscoResult {
+    grid-template-columns: 1fr repeat(3, 38px);
+  }
+
+  .vscoType {
+    justify-self: start;
+  }
+
+  .vscoResult div {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .vscoFaqGrid pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

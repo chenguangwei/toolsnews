@@ -1,0 +1,190 @@
+@media (max-width: 1240px) {
+  .topbarInner {
+    gap: 18px;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .miniSearch {
+    display: none;
+  }
+
+  .toolGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .toolPageShell {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .rightRail {
+    position: static;
+    grid-column: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .topbarInner {
+    padding: 0 18px;
+  }
+
+  .mobileToggle {
+    display: grid;
+    place-items: center;
+  }
+
+  .nav {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 82px;
+    display: none;
+    padding: 14px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: white;
+    box-shadow: var(--shadow);
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .nav button {
+    padding: 10px;
+  }
+
+  .nav button.active::after {
+    bottom: 4px;
+  }
+
+  .submitButton,
+  .langSwitch {
+    display: none;
+  }
+
+  .hero {
+    padding: 42px 18px 32px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .heroSearch {
+    height: auto;
+    padding: 14px;
+    border-radius: 18px;
+    flex-wrap: wrap;
+  }
+
+  .heroSearch button {
+    width: 100%;
+  }
+
+  .heroDecor {
+    opacity: 0.35;
+  }
+
+  .statsInner,
+  .contentShell,
+  .toolPageShell,
+  .serviceStrip,
+  .homeLower {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .statsInner {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .statNote {
+    grid-column: 1 / -1;
+  }
+
+  .contentShell,
+  .toolPageShell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar,
+  .rightRail {
+    position: static;
+    grid-column: auto;
+  }
+
+  .toolPageShell .toolMain {
+    order: 1;
+  }
+
+  .toolPageShell .rightRail {
+    order: 2;
+  }
+
+  .toolPageShell .sidebar {
+    order: 3;
+  }
+
+  .categoryList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .toolGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .serviceStrip,
+  .homeLower,
+  .footerInner,
+  .toolBottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .serviceStrip > div,
+  .serviceStrip > div:first-child,
+  .serviceStrip > div:last-child {
+    border-radius: 8px;
+  }
+
+  .converterHead {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .pdfLogo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .saveBtn {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .formGrid,
+  .featureLine,
+  .tutorialSteps,
+  .rightRail,
+  .jsxbinLayout,
+  .codeGrid,
+  .seoFaqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .jsxbinHero {
+    grid-template-columns: 1fr;
+  }
+
+  .jsxbinAside {
+    position: static;
+  }
+
+.footerBottom {
+  flex-direction: column;
+}
+}
