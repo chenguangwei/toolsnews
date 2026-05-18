@@ -13,6 +13,7 @@ function GenericTool({ tool, notify, toggleSave, saved }) {
   const [busy, setBusy] = useState(false);
   const [todoItems, setTodoItems] = useState(() => JSON.parse(localStorage.getItem("todoItems") || "[]"));
   const [imagePreview, setImagePreview] = useState("");
+  const isSvgResult = result.trim().startsWith("<svg ");
   const run = async () => {
     if (toolType === "pdf") {
       try {
@@ -137,6 +138,7 @@ function GenericTool({ tool, notify, toggleSave, saved }) {
           ))}
         </div>
       )}
+      {isSvgResult && <div className="svgResultPreview" dangerouslySetInnerHTML={{ __html: result }} />}
       {result && <pre>{result}</pre>}
     </div>
   );

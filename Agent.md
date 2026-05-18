@@ -75,4 +75,4 @@ Don't cater to anyone and work with the most professional attitude.
 All docs files must have the year, month, day, hour and minute in their suffixes.
 
 
-
+每一个工具都有一个独立的目录，例如在 tools 下。

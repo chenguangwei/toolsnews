@@ -196,6 +196,21 @@
   white-space: pre-wrap;
 }
 
+.svgResultPreview {
+  display: grid;
+  place-items: center;
+  margin: 14px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.svgResultPreview svg {
+  width: min(220px, 100%);
+  height: auto;
+}
+
 .articleView .articleThumb {
   width: 150px;
   height: 82px;

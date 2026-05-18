@@ -3,7 +3,7 @@ import { downloadBlob, toCsv } from "../../shared/utils.js";
 function classifyTool(name) {
   if (name.includes("PDF")) return "pdf";
   if (name.includes("图片")) return "image";
-  if (name.includes("JSON") || name.includes("代码") || name.includes("API") || name.includes("编译")) return "dev";
+  if (name.includes("JSON") || name.includes("代码") || name.includes("API") || name.includes("编译") || name.includes("Base64") || name.includes("UUID") || name.includes("正则") || name.includes("Diff") || name.includes("二维码") || name.includes("颜色") || name.includes("时间戳") || name.includes("密码") || name.includes("单位")) return "dev";
   if (name.includes("表格") || name.includes("思维") || name.includes("PPT") || name.includes("文档")) return "office";
   if (name.includes("CSV") || name.includes("数据") || name.includes("统计")) return "data";
   if (name.includes("字数") || name.includes("文本") || name.includes("大小写") || name.includes("Markdown")) return "text";
@@ -30,6 +30,364 @@ function csvToJson(text) {
   return lines.map((line) => Object.fromEntries(line.split(",").map((value, index) => [headers[index] || `field${index + 1}`, value.trim()])));
 }
 
+function encodeUtf8Base64(text) {
+  if (typeof Buffer !== "undefined") return Buffer.from(text, "utf8").toString("base64");
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+  return btoa(binary);
+}
+
+function decodeUtf8Base64(text) {
+  try {
+    if (typeof Buffer !== "undefined") return Buffer.from(text, "base64").toString("utf8");
+    const binary = atob(text);
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  } catch (error) {
+    return `Base64 解码失败：${error.message}`;
+  }
+}
+
+function runBase64Tool(source) {
+  const modeMatch = source.match(/^(encode|decode|编码|解码)\s*[:：]\s*([\s\S]*)$/i);
+  if (!modeMatch) return `编码：${encodeUtf8Base64(source)}\n解码提示：输入 decode: 后跟 Base64 内容可解码。`;
+  const mode = modeMatch[1].toLowerCase();
+  const value = modeMatch[2];
+  return mode === "decode" || mode === "解码" ? decodeUtf8Base64(value.trim()) : encodeUtf8Base64(value);
+}
+
+function runTimestampTool(source) {
+  const numeric = source.match(/^\d{10,13}$/);
+  const date = numeric
+    ? new Date(Number(source) * (source.length === 10 ? 1000 : 1))
+    : new Date(source);
+  if (Number.isNaN(date.getTime())) return "请输入 Unix 秒/毫秒，或可识别日期，例如 2024-01-01T00:00:00Z。";
+  return [
+    `本地时间：${date.toLocaleString("zh-CN", { hour12: false })}`,
+    `UTC：${date.toISOString()}`,
+    `日期：${date.toISOString().slice(0, 10)}`,
+    `Unix 秒：${Math.floor(date.getTime() / 1000)}`,
+    `Unix 毫秒：${date.getTime()}`
+  ].join("\n");
+}
+
+function secureRandomInt(max) {
+  if (max <= 0) return 0;
+  const cryptoApi = globalThis.crypto;
+  if (cryptoApi?.getRandomValues) {
+    const array = new Uint32Array(1);
+    cryptoApi.getRandomValues(array);
+    return array[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+
+function runUuidTool(source) {
+  const count = Math.max(1, Math.min(100, Number.parseInt(source, 10) || 1));
+  return Array.from({ length: count }, () => {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (char) =>
+      (Number(char) ^ secureRandomInt(16) & 15 >> Number(char) / 4).toString(16)
+    );
+  }).join("\n");
+}
+
+function runPasswordTool(source) {
+  const length = Math.max(8, Math.min(128, Number(source.match(/(?:length|长度)\s*=\s*(\d+)/i)?.[1] || source.match(/\d+/)?.[0] || 16)));
+  const lower = "abcdefghijklmnopqrstuvwxyz";
+  const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*()-_=+[]{};:,.?/|~";
+  const wantsUpper = /uppercase|upper|大写/i.test(source);
+  const wantsLower = /lowercase|lower|小写/i.test(source);
+  const wantsNumbers = /numbers?|digits?|数字/i.test(source);
+  const wantsSymbols = /symbols?|特殊|符号/i.test(source);
+  const explicit = wantsUpper || wantsLower || wantsNumbers || wantsSymbols;
+  const groups = [
+    explicit && !wantsLower ? "" : lower,
+    explicit && !wantsUpper ? "" : upper,
+    explicit && !wantsNumbers ? "" : numbers,
+    explicit && !wantsSymbols ? "" : symbols
+  ].filter(Boolean);
+  const pool = groups.join("");
+  const seeded = groups.map((group) => group[secureRandomInt(group.length)]);
+  while (seeded.length < length) seeded.push(pool[secureRandomInt(pool.length)]);
+  return seeded.sort(() => secureRandomInt(3) - 1).join("");
+}
+
+function parseRegexInput(source) {
+  const [firstLine, ...body] = source.split(/\r?\n/);
+  const literal = firstLine.match(/^\/([\s\S]*)\/([dgimsuvy]*)$/);
+  if (literal) return { pattern: literal[1], flags: literal[2], text: body.join("\n") };
+  const [pattern, flags = "g", ...text] = source.split(/\r?\n---\r?\n/);
+  return { pattern, flags, text: text.join("\n---\n") || body.join("\n") };
+}
+
+function runRegexTool(source) {
+  try {
+    const { pattern, flags, text } = parseRegexInput(source);
+    const safeFlags = flags.includes("g") ? flags : `${flags}g`;
+    const regex = new RegExp(pattern, safeFlags);
+    const matches = [...text.matchAll(regex)];
+    if (!matches.length) return "未匹配到内容。";
+    return matches.map((match, index) => {
+      const groups = match.slice(1).length ? `\n分组：${match.slice(1).join(", ")}` : "";
+      return `匹配 ${index + 1}：${match[0]}\n位置：${match.index}${groups}`;
+    }).join("\n\n");
+  } catch (error) {
+    return `正则解析失败：${error.message}`;
+  }
+}
+
+function runTextDiffTool(source) {
+  const [left = "", right = ""] = source.split(/\r?\n---\r?\n/);
+  const oldLines = left.split(/\r?\n/);
+  const newLines = right.split(/\r?\n/);
+  const max = Math.max(oldLines.length, newLines.length);
+  const output = [];
+  for (let index = 0; index < max; index += 1) {
+    if (oldLines[index] === newLines[index]) output.push(`  ${oldLines[index] ?? ""}`);
+    else {
+      if (oldLines[index] !== undefined) output.push(`- ${oldLines[index]}`);
+      if (newLines[index] !== undefined) output.push(`+ ${newLines[index]}`);
+    }
+  }
+  return output.join("\n");
+}
+
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[char]));
+}
+
+function runQrTool(source) {
+  const dataBytes = [...new TextEncoder().encode(source)];
+  const versions = [
+    { version: 1, dataCodewords: 19, eccCodewords: 7, align: [] },
+    { version: 2, dataCodewords: 34, eccCodewords: 10, align: [6, 18] },
+    { version: 3, dataCodewords: 55, eccCodewords: 15, align: [6, 22] },
+    { version: 4, dataCodewords: 80, eccCodewords: 20, align: [6, 26] }
+  ];
+  const spec = versions.find((item) => dataBytes.length + 2 <= item.dataCodewords);
+  if (!spec) return "当前本地二维码生成器支持最多约 78 个英文字符或较短中文文本。";
+  const size = 21 + (spec.version - 1) * 4;
+  const cell = 8;
+  const quiet = 4;
+  const total = (size + quiet * 2) * cell;
+  const matrix = Array.from({ length: size }, () => Array(size).fill(false));
+  const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+  const setModule = (row, col, value, reserve = true) => {
+    if (row < 0 || row >= size || col < 0 || col >= size) return;
+    matrix[row][col] = Boolean(value);
+    if (reserve) reserved[row][col] = true;
+  };
+  const addFinder = (row, col) => {
+    for (let y = -1; y <= 7; y += 1) {
+      for (let x = -1; x <= 7; x += 1) {
+        const yy = row + y;
+        const xx = col + x;
+        if (yy < 0 || yy >= size || xx < 0 || xx >= size) continue;
+        setModule(yy, xx, y >= 0 && y <= 6 && x >= 0 && x <= 6 && (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4)));
+      }
+    }
+  };
+  const addAlignment = (centerRow, centerCol) => {
+    for (let y = -2; y <= 2; y += 1) {
+      for (let x = -2; x <= 2; x += 1) {
+        setModule(centerRow + y, centerCol + x, Math.max(Math.abs(x), Math.abs(y)) !== 1);
+      }
+    }
+  };
+  addFinder(0, 0);
+  addFinder(0, size - 7);
+  addFinder(size - 7, 0);
+  for (let i = 8; i < size - 8; i += 1) {
+    setModule(6, i, i % 2 === 0);
+    setModule(i, 6, i % 2 === 0);
+  }
+  spec.align.forEach((row) => spec.align.forEach((col) => {
+    const overlapsFinder = (row < 9 && col < 9) || (row < 9 && col > size - 10) || (row > size - 10 && col < 9);
+    if (!overlapsFinder) addAlignment(row, col);
+  }));
+  for (let i = 0; i < 9; i += 1) {
+    if (i !== 6) {
+      reserved[8][i] = true;
+      reserved[i][8] = true;
+    }
+  }
+  for (let i = 0; i < 8; i += 1) {
+    reserved[8][size - 1 - i] = true;
+    reserved[size - 1 - i][8] = true;
+  }
+  setModule(4 * spec.version + 9, 8, true);
+
+  const bits = [];
+  const appendBits = (value, length) => {
+    for (let i = length - 1; i >= 0; i -= 1) bits.push((value >>> i) & 1);
+  };
+  appendBits(0b0100, 4);
+  appendBits(dataBytes.length, 8);
+  dataBytes.forEach((byte) => appendBits(byte, 8));
+  appendBits(0, Math.min(4, spec.dataCodewords * 8 - bits.length));
+  while (bits.length % 8) bits.push(0);
+  const codewords = [];
+  for (let i = 0; i < bits.length; i += 8) codewords.push(Number.parseInt(bits.slice(i, i + 8).join(""), 2));
+  for (let pad = 0xec; codewords.length < spec.dataCodewords; pad = pad === 0xec ? 0x11 : 0xec) codewords.push(pad);
+  const allCodewords = [...codewords, ...reedSolomonRemainder(codewords, spec.eccCodewords)];
+  const dataBits = allCodewords.flatMap((byte) => Array.from({ length: 8 }, (_, index) => (byte >>> (7 - index)) & 1));
+  let bitIndex = 0;
+  let upward = true;
+  for (let col = size - 1; col >= 1; col -= 2) {
+    if (col === 6) col -= 1;
+    for (let step = 0; step < size; step += 1) {
+      const row = upward ? size - 1 - step : step;
+      for (let offset = 0; offset < 2; offset += 1) {
+        const x = col - offset;
+        if (reserved[row][x]) continue;
+        const rawBit = dataBits[bitIndex] || 0;
+        setModule(row, x, rawBit ^ qrMask(0, row, x), false);
+        bitIndex += 1;
+      }
+    }
+    upward = !upward;
+  }
+  drawFormatBits(matrix, reserved, 0);
+  const rects = matrix
+    .flatMap((line, row) => line.map((filled, col) => filled ? `<rect x="${(col + quiet) * cell}" y="${(row + quiet) * cell}" width="${cell}" height="${cell}"/>` : ""))
+    .join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" data-qr-text="${escapeHtml(source)}" viewBox="0 0 ${total} ${total}" width="${total}" height="${total}" role="img" aria-label="QR code"><rect width="${total}" height="${total}" fill="#fff"/><g fill="#111">${rects}</g></svg>`;
+}
+
+function reedSolomonRemainder(data, degree) {
+  const generator = reedSolomonGenerator(degree);
+  const result = Array(degree).fill(0);
+  data.forEach((byte) => {
+    const factor = byte ^ result.shift();
+    result.push(0);
+    generator.forEach((coefficient, index) => {
+      result[index] ^= gfMultiply(coefficient, factor);
+    });
+  });
+  return result;
+}
+
+function reedSolomonGenerator(degree) {
+  let result = [1];
+  for (let i = 0; i < degree; i += 1) {
+    const next = Array(result.length + 1).fill(0);
+    result.forEach((coefficient, index) => {
+      next[index] ^= gfMultiply(coefficient, 1);
+      next[index + 1] ^= gfMultiply(coefficient, gfPow(2, i));
+    });
+    result = next;
+  }
+  return result.slice(1);
+}
+
+function gfMultiply(left, right) {
+  let product = 0;
+  for (let i = 7; i >= 0; i -= 1) {
+    product = (product << 1) ^ ((product >>> 7) * 0x11d);
+    product ^= ((right >>> i) & 1) * left;
+  }
+  return product & 0xff;
+}
+
+function gfPow(value, power) {
+  let result = 1;
+  for (let i = 0; i < power; i += 1) result = gfMultiply(result, value);
+  return result;
+}
+
+function qrMask(mask, row, col) {
+  return mask === 0 && (row + col) % 2 === 0 ? 1 : 0;
+}
+
+function drawFormatBits(matrix, reserved, mask) {
+  const size = matrix.length;
+  const set = (row, col, bit) => {
+    matrix[row][col] = Boolean(bit);
+    reserved[row][col] = true;
+  };
+  let data = (1 << 3) | mask;
+  let rem = data;
+  for (let i = 0; i < 10; i += 1) rem = (rem << 1) ^ (((rem >>> 9) & 1) * 0x537);
+  const bits = ((data << 10) | (rem & 0x3ff)) ^ 0x5412;
+  const get = (index) => (bits >>> index) & 1;
+  for (let i = 0; i <= 5; i += 1) set(8, i, get(i));
+  set(8, 7, get(6));
+  set(8, 8, get(7));
+  set(7, 8, get(8));
+  for (let i = 9; i < 15; i += 1) set(14 - i, 8, get(i));
+  for (let i = 0; i < 8; i += 1) set(size - 1 - i, 8, get(i));
+  for (let i = 8; i < 15; i += 1) set(8, size - 15 + i, get(i));
+  set(8, size - 8, true);
+}
+
+function parseColor(source) {
+  const hex = source.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)?.[1];
+  if (hex) {
+    const full = hex.length === 3 ? hex.split("").map((char) => char + char).join("") : hex;
+    return {
+      r: Number.parseInt(full.slice(0, 2), 16),
+      g: Number.parseInt(full.slice(2, 4), 16),
+      b: Number.parseInt(full.slice(4, 6), 16)
+    };
+  }
+  const rgb = source.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
+  if (rgb) return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
+  return null;
+}
+
+function runColorTool(source) {
+  const color = parseColor(source);
+  if (!color) return "请输入 HEX 或 RGB，例如 #336699 或 rgb(51, 102, 153)。";
+  const { r, g, b } = color;
+  const hex = `#${[r, g, b].map((value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0")).join("")}`;
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const light = (max + min) / 2;
+  const delta = max - min;
+  const sat = delta === 0 ? 0 : delta / (1 - Math.abs(2 * light - 1));
+  const hue = delta === 0 ? 0 : max === rn ? 60 * (((gn - bn) / delta) % 6) : max === gn ? 60 * ((bn - rn) / delta + 2) : 60 * ((rn - gn) / delta + 4);
+  return [`HEX：${hex}`, `RGB：rgb(${r}, ${g}, ${b})`, `HSL：hsl(${Math.round((hue + 360) % 360)}, ${Math.round(sat * 100)}%, ${Math.round(light * 100)}%)`].join("\n");
+}
+
+const unitFactors = {
+  m: { group: "length", factor: 1 },
+  km: { group: "length", factor: 1000 },
+  cm: { group: "length", factor: 0.01 },
+  mm: { group: "length", factor: 0.001 },
+  mi: { group: "length", factor: 1609.344 },
+  mile: { group: "length", factor: 1609.344 },
+  yd: { group: "length", factor: 0.9144 },
+  ft: { group: "length", factor: 0.3048 },
+  in: { group: "length", factor: 0.0254 },
+  kg: { group: "weight", factor: 1 },
+  g: { group: "weight", factor: 0.001 },
+  lb: { group: "weight", factor: 0.45359237 },
+  oz: { group: "weight", factor: 0.028349523125 }
+};
+
+function runUnitTool(source) {
+  const match = source.toLowerCase().match(/(-?\d+(?:\.\d+)?)\s*([a-z]+|°?[cf])\s*(?:to|->|到|转)\s*([a-z]+|°?[cf])/i);
+  if (!match) return "请输入格式：10 km to mi、100 kg to lb、32 f to c。";
+  const value = Number(match[1]);
+  const from = match[2].replace("°", "");
+  const to = match[3].replace("°", "");
+  if (["c", "f"].includes(from) && ["c", "f"].includes(to)) {
+    const converted = from === to ? value : from === "c" ? value * 9 / 5 + 32 : (value - 32) * 5 / 9;
+    return `${value} ${from} = ${Number(converted.toFixed(4))} ${to}`;
+  }
+  const fromUnit = unitFactors[from];
+  const toUnit = unitFactors[to];
+  if (!fromUnit || !toUnit || fromUnit.group !== toUnit.group) return "暂不支持该单位组合。";
+  const converted = value * fromUnit.factor / toUnit.factor;
+  return `${value} ${from} = ${converted.toFixed(4)} ${to}`;
+}
 
 function runGenericTool(name, input) {
   const source = input.trim();
@@ -57,6 +415,15 @@ function runGenericTool(name, input) {
     const sum = nums.reduce((a, b) => a + b, 0);
     return `数量：${nums.length}\n总和：${sum}\n平均：${(sum / nums.length).toFixed(2)}\n最小：${Math.min(...nums)}\n最大：${Math.max(...nums)}`;
   }
+  if (name.includes("Base64")) return runBase64Tool(source);
+  if (name.includes("时间戳") || name.includes("Timestamp")) return runTimestampTool(source);
+  if (name.includes("UUID")) return runUuidTool(source);
+  if (name.includes("密码")) return runPasswordTool(source);
+  if (name.includes("正则") || name.includes("Regex")) return runRegexTool(source);
+  if (name.includes("Diff") || name.includes("对比")) return runTextDiffTool(source);
+  if (name.includes("二维码") || name.includes("QR")) return runQrTool(source);
+  if (name.includes("颜色")) return runColorTool(source);
+  if (name.includes("单位")) return runUnitTool(source);
   if (name.includes("日期")) {
     const date = new Date(source);
     if (Number.isNaN(date.getTime())) return "请输入可识别日期，例如 2026-05-13。";
