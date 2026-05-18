@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
@@ -22,6 +23,8 @@
     "jsxbin": "^2.3.0"
   },
   "devDependencies": {
-    "playwright": "^1.60.0"
+    "@cloudflare/vite-plugin": "^1.37.0",
+    "playwright": "^1.60.0",
+    "wrangler": "^4.91.0"
   }
 }
