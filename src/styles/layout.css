@@ -283,6 +283,122 @@
   background: #f8fbff;
 }
 
+.cutoutTool {
+  display: grid;
+  gap: 14px;
+}
+
+.cutoutWorkspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px;
+  align-items: start;
+}
+
+.cutoutCanvasWrap {
+  position: relative;
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, #eef3fb 25%, transparent 25%),
+    linear-gradient(-45deg, #eef3fb 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eef3fb 75%),
+    linear-gradient(-45deg, transparent 75%, #eef3fb 75%);
+  background-color: #dfe7f3;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+
+.cutoutCanvas {
+  width: 100%;
+  max-height: 620px;
+  object-fit: contain;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.cutoutEmpty {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #52627f;
+  font-weight: 850;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.cutoutControls {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.cutoutControls .primaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.segmentedControl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: white;
+}
+
+.segmentedControl button {
+  min-height: 36px;
+  color: #52627f;
+  font-size: 13px;
+  font-weight: 900;
+  border-radius: 6px;
+}
+
+.segmentedControl button.active {
+  color: white;
+  background: #1556df;
+}
+
+.rangeControl {
+  display: grid;
+  gap: 8px;
+  color: #273652;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.rangeControl input {
+  width: 100%;
+}
+
+.cutoutActions {
+  margin: 0;
+}
+
+.cutoutActions button {
+  flex: 1 1 110px;
+}
+
+.cutoutStatus {
+  margin: 0;
+  color: #5f6f8d;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .todoList {
   display: grid;
   gap: 8px;

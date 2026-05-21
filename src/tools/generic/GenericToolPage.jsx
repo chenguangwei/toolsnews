@@ -6,7 +6,7 @@ import { ActionPanel, CategoryPanel } from "../../pages/HomePage.jsx";
 import { scrollToSelector } from "../../shared/utils.js";
 import { GenericTool } from "./GenericTool.jsx";
 
-function GenericToolPage({ tool, setRoute, notify, setModal, toggleSave, savedTools, openTool }) {
+function GenericToolPage({ tool, setRoute, setActiveCategory, notify, setModal, toggleSave, savedTools, openTool }) {
   const { categories: cat, messages: t } = useI18n();
   if (!tool) {
     return (
@@ -37,10 +37,7 @@ function GenericToolPage({ tool, setRoute, notify, setModal, toggleSave, savedTo
             t={t}
             cat={cat}
             activeCategory={tool.category}
-            setActiveCategory={(id) => {
-              setRoute("home");
-              window.setTimeout(() => document.querySelector(`[data-category-id="${id}"]`)?.click(), 120);
-            }}
+            setActiveCategory={(id) => setActiveCategory ? setActiveCategory(id) : setRoute("home")}
           />
           <ActionPanel
             icon={BadgeCheck}
@@ -55,7 +52,7 @@ function GenericToolPage({ tool, setRoute, notify, setModal, toggleSave, savedTo
           <div className="breadcrumb detailCrumb">
             <button onClick={() => setRoute("home")}>{t.breadcrumbHome}</button>
             <span>/</span>
-            <button onClick={() => { setRoute("home"); window.setTimeout(() => document.querySelector(`[data-category-id="${tool.category}"]`)?.click(), 120); }}>{cat[tool.category]}</button>
+            <button onClick={() => setActiveCategory ? setActiveCategory(tool.category) : setRoute("home")}>{cat[tool.category]}</button>
             <span>/</span>
             <strong>{tool.name}</strong>
           </div>

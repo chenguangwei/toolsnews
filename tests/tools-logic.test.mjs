@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import test from "node:test";
 import { runGenericTool } from "../src/tools/generic/logic.js";
 import { genericToolSlugs } from "../src/tools/slugs.js";
+import { detectBrowserLocale, getInitialLocale, normalizeBrowserLocale } from "../src/i18n/locale.js";
 import { buildCategorySeo, buildToolSeo, readPublicCategories, readPublicTools } from "../scripts/seo-data.mjs";
 
 const topTenTools = [
@@ -23,6 +24,22 @@ test("top 10 common tools are registered in the public tool list", () => {
   const siteData = readFileSync(new URL("../src/data/siteData.jsx", import.meta.url), "utf8");
 
   assert.deepEqual(topTenTools.filter((name) => !siteData.includes(`name: "${name}"`)), []);
+});
+
+test("browser locale detection maps supported region codes", () => {
+  assert.equal(normalizeBrowserLocale("zh-CN"), "zh");
+  assert.equal(normalizeBrowserLocale("en-US"), "en");
+  assert.equal(normalizeBrowserLocale("ja-JP"), "ja");
+  assert.equal(normalizeBrowserLocale("ko-KR"), "ko");
+  assert.equal(detectBrowserLocale(["fr-FR", "ko-KR"]), "ko");
+  assert.equal(detectBrowserLocale(["fr-FR"]), "zh");
+});
+
+test("saved locale overrides browser locale detection", () => {
+  const storage = { getItem: () => "ja" };
+  const navigatorLike = { languages: ["ko-KR"], language: "ko-KR" };
+
+  assert.equal(getInitialLocale(storage, navigatorLike), "ja");
 });
 
 test("every public homepage tool has an independent route", () => {
@@ -98,6 +115,19 @@ test("expanded catalog routes are deduplicated and included in SEO output", () =
   assert.ok(tools.some((tool) => tool.route === "bmi-calculator"));
   assert.ok(tools.some((tool) => tool.route === "webp-to-jpg"));
   assert.ok(tools.some((tool) => tool.route === "compound-interest-calculator"));
+  assert.ok(tools.some((tool) => tool.route === "background-remover" && tool.name === "图片去背景抠图"));
+});
+
+test("background remover is exposed as an image SEO landing tool", () => {
+  const tools = readPublicTools();
+  const backgroundRemover = tools.find((tool) => tool.route === "background-remover");
+  const seo = buildToolSeo(backgroundRemover, "https://newaitools.app");
+
+  assert.equal(backgroundRemover.category, "image");
+  assert.match(backgroundRemover.desc, /自动去除图片背景/);
+  assert.deepEqual(backgroundRemover.tags, ["抠图", "去背景", "透明PNG"]);
+  assert.equal(seo.path, "/tools/background-remover");
+  assert.match(seo.description, /图片去背景抠图/);
 });
 
 test("prerender script is wired into the production build lifecycle", () => {

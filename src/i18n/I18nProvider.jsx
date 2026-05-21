@@ -1,19 +1,20 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { categoryNames, defaultLocale, locales, messages } from "./messages.js";
+import { getInitialLocale, resolveLocale } from "./locale.js";
 
 const I18nContext = createContext(null);
 
-function resolveLocale(value) {
-  return locales.some((locale) => locale.id === value) ? value : defaultLocale;
-}
-
 function I18nProvider({ children }) {
-  const [locale, setLocaleState] = useState(() => resolveLocale(localStorage.getItem("toolboxLocale") || defaultLocale));
+  const [locale, setLocaleState] = useState(() => getInitialLocale());
 
   const setLocale = React.useCallback((nextLocale) => {
     const resolved = resolveLocale(nextLocale);
     setLocaleState(resolved);
-    localStorage.setItem("toolboxLocale", resolved);
+    try {
+      localStorage.setItem("toolboxLocale", resolved);
+    } catch {
+      // Keep language switching usable when storage is blocked.
+    }
   }, []);
 
   useEffect(() => {

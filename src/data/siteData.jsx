@@ -317,6 +317,7 @@ const genericToolSamples = {
   "标题长度检测": "智用工具站 - 免费在线工具大全",
   "描述长度检测": "智用工具站收录高效好用的在线工具，覆盖 PDF、图片、SEO、开发、文本处理和日常效率场景。",
   "关键词密度分析": "在线工具 SEO 工具 PDF 工具 在线工具 图片工具 SEO 工具",
+  "图片去背景抠图": "上传图片后先自动去背景，再用画笔保留主体或擦除多余背景，最后导出透明 PNG。",
   "Open Graph 预览": "title: 智用工具站\ndescription: 免费在线工具大全\nurl: https://newaitools.app\nimage: https://newaitools.app/og.png",
   "Schema 标记生成器": "name: 智用工具站\ndescription: 免费在线工具大全\nurl: https://newaitools.app",
   "URL 参数清理": "https://example.com/page?utm_source=newsletter&utm_campaign=spring&id=42&fbclid=abc",

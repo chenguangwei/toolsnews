@@ -23,6 +23,7 @@ const messages = {
     viewAll: "查看全部",
     loadMore: "加载更多工具",
     serviceTitle: ["免费 & 无需安装", "安全 & 隐私保护", "多端支持"],
+    serviceBody: ["所有工具在线使用，打开网页即可，免下载任何软件。", "文件不会保存到云端，处理完成后自动删除，保护您的隐私安全。", "支持电脑、手机、平板等多端访问，随时随地使用。"],
     faq: "常见问题 FAQ",
     moreQuestions: "更多问题",
     latest: "最新文章 & 教程",
@@ -75,6 +76,7 @@ const messages = {
     viewAll: "View all",
     loadMore: "Load more tools",
     serviceTitle: ["Free & no install", "Secure & private", "Multi-device"],
+    serviceBody: ["Use every tool online from the browser. No software download required.", "Files are not stored in the cloud, and local results can be cleared after processing.", "Works across desktop, phone, and tablet layouts."],
     faq: "FAQ",
     moreQuestions: "More questions",
     latest: "Latest guides",
@@ -127,6 +129,7 @@ const messages = {
     viewAll: "すべて見る",
     loadMore: "さらに表示",
     serviceTitle: ["無料・インストール不要", "安全・プライバシー保護", "マルチデバイス"],
+    serviceBody: ["ブラウザでそのまま利用でき、ソフトウェアのインストールは不要です。", "ファイルはクラウドに保存せず、処理後にローカル結果を削除できます。", "PC、スマートフォン、タブレットで使いやすいレイアウトです。"],
     faq: "よくある質問",
     moreQuestions: "さらに質問",
     latest: "最新記事",
@@ -154,6 +157,59 @@ const messages = {
     noHistory: "履歴はありません",
     clearHistory: "履歴削除",
     refresh: "更新"
+  },
+  ko: {
+    nav: ["홈", "카테고리", "AI 도구", "순위", "가이드", "리소스", "혜택", "소개"],
+    submit: "도구 제출",
+    searchPlaceholder: "도구 검색...",
+    brand: "ToolBox Hub",
+    brandSub: "스마트 도구",
+    heroTitle: "빠르게 쓰는 온라인 도구 찾기",
+    heroText: "업무, 학습, 일상 작업을 위한 2000개 이상의 엄선된 도구 모음입니다.",
+    heroSearch: "PDF 변환, 워터마크 제거, 키워드 도구 검색...",
+    search: "검색",
+    all: "전체",
+    stats: ["수록 도구", "카테고리", "일일 사용"],
+    independent: "각 도구를 독립 작업 공간에서 열 수 있습니다",
+    safe: "안전 · 무료 · 온라인 · 설치 없음",
+    breadcrumbHome: "홈",
+    allTools: "전체 도구",
+    categoryTitle: "카테고리",
+    favorites: "저장 및 기록",
+    login: "로그인",
+    collect: "저장",
+    useNow: "바로 사용",
+    viewAll: "전체 보기",
+    loadMore: "도구 더 보기",
+    serviceTitle: ["무료 및 설치 없음", "보안 및 개인정보 보호", "여러 기기 지원"],
+    serviceBody: ["브라우저에서 바로 사용할 수 있으며 별도 설치가 필요 없습니다.", "파일은 클라우드에 저장하지 않으며 처리 후 로컬 결과를 정리할 수 있습니다.", "데스크톱, 휴대폰, 태블릿에서 편하게 사용할 수 있습니다."],
+    faq: "자주 묻는 질문",
+    moreQuestions: "질문 더 보기",
+    latest: "최신 가이드",
+    moreArticles: "기사 더 보기",
+    footerSlogan: "엄선된 온라인 도구를 필요할 때 바로 사용할 수 있습니다.",
+    toolIntro: "도구 소개",
+    steps: "사용 단계",
+    related: "관련 도구",
+    secure: "안전 · 무료 · 광고 없음",
+    supportLang: "지원 언어:",
+    upload: "PDF를 여기에 끌어오거나 클릭하여 업로드",
+    uploadHint: "PDF 형식, 최대 50MB",
+    choosePdf: "PDF 파일 선택",
+    settings: "변환 설정",
+    output: "출력 형식",
+    ocr: "스캔 PDF용 OCR 사용",
+    range: "범위",
+    allPages: "전체 페이지",
+    selectedPages: "선택한 페이지",
+    more: "추가 옵션",
+    keepLayout: "원본 레이아웃과 서식 유지",
+    extractImages: "이미지 추출",
+    start: "변환 시작",
+    history: "기록(최근 7일)",
+    noHistory: "기록 없음",
+    clearHistory: "지우기",
+    refresh: "새로고침"
   }
 };
 
@@ -196,13 +252,27 @@ const categoryNames = {
     media: "動画音声",
     data: "データ分析",
     life: "生活ツール"
+  },
+  ko: {
+    all: "전체 도구",
+    ai: "AI 도구",
+    seo: "SEO 도구",
+    image: "이미지 도구",
+    pdf: "PDF 도구",
+    dev: "개발 도구",
+    office: "오피스 도구",
+    text: "텍스트 도구",
+    media: "미디어 도구",
+    data: "데이터 도구",
+    life: "생활 도구"
   }
 };
 
 const locales = [
   { id: "zh", label: "中", htmlLang: "zh-CN" },
   { id: "en", label: "EN", htmlLang: "en" },
-  { id: "ja", label: "日", htmlLang: "ja" }
+  { id: "ja", label: "日", htmlLang: "ja" },
+  { id: "ko", label: "한", htmlLang: "ko" }
 ];
 
 const defaultLocale = "zh";

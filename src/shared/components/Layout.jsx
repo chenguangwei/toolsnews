@@ -47,7 +47,6 @@ function Header({ setRoute, route, mobileMenu, setMobileMenu, notify, setModal, 
       notify("请输入搜索关键词");
       return;
     }
-    setRoute("home");
     const matched = toolGroups.find((group) => group.tools.some((tool) => `${tool.name}${tool.desc}${tool.tags.join("")}`.toLowerCase().includes(value.toLowerCase())));
     setActiveCategory(matched?.id || "all");
     notify(matched ? `已定位到 ${cat[matched.id]} 相关工具` : "未找到精确匹配，已显示全部工具");
@@ -335,7 +334,7 @@ function MessagePanel({ message }) {
 }
 
 function Footer({ setRoute, notify, setModal, setActiveCategory }) {
-  const { categories: cat, messages: t } = useI18n();
+  const { categories: cat, locales, messages: t } = useI18n();
   const [email, setEmail] = useState("");
   const subscribe = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -387,7 +386,7 @@ function Footer({ setRoute, notify, setModal, setActiveCategory }) {
       <div className="footerBottom">
         <span>© 2024 智用工具站（ToolBox Hub）保留所有权利。</span>
         <span>使用条款　隐私政策　Sitemap　友情链接</span>
-        <span>中　|　EN　|　日　<Moon size={14} /></span>
+        <span>{locales.map((item) => item.label).join("　|　")}　<Moon size={14} /></span>
       </div>
     </footer>
   );

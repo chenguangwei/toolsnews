@@ -23,6 +23,7 @@ const expandedToolCatalog = [
 
   { category: "image", name: "图片尺寸调整", route: "image-resizer", iconKey: "FileImage", desc: "按宽高缩放图片并下载", tags: ["尺寸", "图片"], rating: "4.8", users: "67.9K" },
   { category: "image", name: "图片裁剪工具", route: "image-cropper", iconKey: "Image", desc: "按比例裁剪图片素材", tags: ["裁剪", "图片"], rating: "4.7", users: "52.1K" },
+  { category: "image", name: "图片去背景抠图", route: "background-remover", iconKey: "Wand2", desc: "自动去除图片背景，也支持用画笔保留或擦除区域后导出透明 PNG", tags: ["抠图", "去背景", "透明PNG"], rating: "4.8", users: "72.4K" },
   { category: "image", name: "WebP 转 PNG", route: "webp-to-png", iconKey: "FileImage", desc: "将 WebP 图片转换为 PNG", tags: ["WebP", "PNG"], rating: "4.7", users: "48.5K" },
   { category: "image", name: "PNG 转 JPG", route: "png-to-jpg", iconKey: "FileImage", desc: "将 PNG 图片转换为 JPG", tags: ["PNG", "JPG"], rating: "4.7", users: "45.6K" },
   { category: "image", name: "JPG 转 PNG", route: "jpg-to-png", iconKey: "FileImage", desc: "将 JPG 图片转换为 PNG", tags: ["JPG", "PNG"], rating: "4.7", users: "43.8K" },

@@ -120,7 +120,7 @@ function App() {
         />
       ) : activeToolRoute ? (
         <React.Suspense fallback={<div className="emptyState panel">工具加载中...</div>}>
-          <activeToolRoute.Component tool={activeToolRoute.tool} setRoute={setRoute} notify={notify} setModal={setModal} toggleSave={toggleSave} savedTools={savedTools} openTool={openTool} />
+          <activeToolRoute.Component tool={activeToolRoute.tool} setRoute={setRoute} setActiveCategory={setActiveCategory} notify={notify} setModal={setModal} toggleSave={toggleSave} savedTools={savedTools} openTool={openTool} />
         </React.Suspense>
       ) : (
         <HomePage

@@ -255,9 +255,9 @@ function ToolCard({ tool, t, onUse }) {
 
 function ServiceStrip({ t }) {
   const items = [
-    { icon: Cloud, body: "所有工具在线使用，打开网页即可，免下载任何软件。" },
-    { icon: ShieldCheck, body: "文件不会保存到云端，处理完成后自动删除，保护您的隐私安全。" },
-    { icon: MonitorSmartphone, body: "支持电脑、手机、平板等多端访问，随时随地使用。" }
+    { icon: Cloud, body: t.serviceBody[0] },
+    { icon: ShieldCheck, body: t.serviceBody[1] },
+    { icon: MonitorSmartphone, body: t.serviceBody[2] }
   ];
   return (
     <section className="serviceStrip">
