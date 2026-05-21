@@ -33,7 +33,7 @@ function Header({ setRoute, route, mobileMenu, setMobileMenu, notify, setModal, 
   const navActions = [
     () => setRoute("home"),
     () => { setRoute("home"); scrollToSelector(".contentShell"); },
-    () => { setRoute("home"); setActiveCategory("ai"); scrollToSelector(".contentShell"); },
+    () => { setActiveCategory("ai"); scrollToSelector(".contentShell"); },
     () => { setModal({ type: "page", title: "排行榜", page: "ranking" }); },
     () => { setRoute("home"); scrollToSelector(".articlePanel"); },
     () => { setModal({ type: "page", title: "资源导航", page: "resources" }); },
@@ -361,14 +361,14 @@ function Footer({ setRoute, notify, setModal, setActiveCategory }) {
           {t.nav.slice(0, 5).map((item, index) => <button key={item} onClick={() => {
             if (index === 0) setRoute("home");
             else if (index === 1) { setRoute("home"); scrollToSelector(".contentShell"); }
-            else if (index === 2) { setRoute("home"); setActiveCategory("ai"); scrollToSelector(".contentShell"); }
+            else if (index === 2) { setActiveCategory("ai"); scrollToSelector(".contentShell"); }
             else if (index === 3) setModal({ type: "page", title: "排行榜", page: "ranking" });
             else setModal({ type: "page", title: "文章教程", page: "articles" });
           }}>{item}</button>)}
         </div>
         <div>
           <h3>热门分类</h3>
-          {["ai", "seo", "image", "pdf", "dev"].map((id) => <button key={id} onClick={() => { setRoute("home"); setActiveCategory(id); scrollToSelector(".contentShell"); }}>{cat[id]}</button>)}
+          {["ai", "seo", "image", "pdf", "dev"].map((id) => <button key={id} onClick={() => { setActiveCategory(id); scrollToSelector(".contentShell"); }}>{cat[id]}</button>)}
         </div>
         <div>
           <h3>资源与支持</h3>

@@ -170,10 +170,17 @@
   .featureLine,
   .tutorialSteps,
   .rightRail,
+  .genericPageShell,
+  .genericHero,
+  .genericSeoGrid,
   .jsxbinLayout,
   .codeGrid,
   .seoFaqGrid {
     grid-template-columns: 1fr;
+  }
+
+  .genericHero .saveBtn {
+    justify-self: start;
   }
 
   .jsxbinHero {

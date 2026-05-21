@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://newaitools.app/sitemap.xml

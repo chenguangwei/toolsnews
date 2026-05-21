@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { UploadCloud } from "../../shared/icons.js";
 import { genericToolSamples } from "../../data/siteData.jsx";
 import { downloadBlob } from "../../shared/utils.js";
-import { runPdfOperation } from "../pdf/logic.js";
 import { classifyTool, runGenericTool, runImageTool } from "./logic.js";
 
 function GenericTool({ tool, notify, toggleSave, saved }) {
   const toolType = classifyTool(tool.name);
-  const [input, setInput] = useState(genericToolSamples[tool.name] || genericToolSamples.default);
+  const [input, setInput] = useState(genericToolSamples[tool.name] || tool.sample || genericToolSamples.default);
   const [result, setResult] = useState("");
   const [files, setFiles] = useState([]);
   const [busy, setBusy] = useState(false);
@@ -19,6 +18,7 @@ function GenericTool({ tool, notify, toggleSave, saved }) {
       try {
         setBusy(true);
         setResult("正在处理 PDF...");
+        const { runPdfOperation } = await import("../pdf/logic.js");
         const output = await runPdfOperation(tool.name, files, input);
         downloadBlob(output.blob, output.fileName);
         setResult(output.note);

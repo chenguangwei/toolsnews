@@ -2,6 +2,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "seo": "node scripts/generate-sitemap.mjs",
+    "prebuild": "npm run seo",
+    "postbuild": "node scripts/prerender-tool-pages.mjs",
     "test": "node --test tests/*.test.mjs",
     "build": "vite build",
     "preview": "npm run build && wrangler dev",

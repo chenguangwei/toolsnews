@@ -559,3 +559,189 @@
   box-shadow: 0 14px 32px rgba(34, 103, 244, 0.35);
   transform: rotate(-90deg);
 }
+
+.toolLandingPage {
+  background:
+    radial-gradient(circle at 86% 120px, rgba(24, 198, 209, 0.09), transparent 22rem),
+    linear-gradient(180deg, #f7faff 0, #ffffff 430px, #f7faff 100%);
+}
+
+.genericPageShell {
+  grid-template-columns: 250px minmax(0, 1fr) 292px;
+  gap: 22px;
+  padding-top: 28px;
+}
+
+.genericHero {
+  padding: 26px;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: start;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(34, 103, 244, 0.12), transparent 18rem),
+    linear-gradient(180deg, #ffffff, #f8fbff);
+}
+
+.genericHeroIcon {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  color: white;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary), var(--violet));
+  box-shadow: 0 16px 30px rgba(34, 103, 244, 0.22);
+}
+
+.genericHeroIcon.seo {
+  background: linear-gradient(135deg, #19a36f, #1bbbd0);
+}
+
+.genericHeroIcon.image {
+  background: linear-gradient(135deg, #ff8a1d, #ff4057);
+}
+
+.genericHeroIcon.pdf {
+  background: linear-gradient(135deg, #ff5264, #ef263d);
+}
+
+.genericHeroIcon.dev {
+  background: linear-gradient(135deg, #2267f4, #18c6d1);
+}
+
+.genericHeroIcon.office {
+  background: linear-gradient(135deg, #6f50ff, #2267f4);
+}
+
+.genericHeroIcon.text {
+  background: linear-gradient(135deg, #31415f, #2267f4);
+}
+
+.genericHeroIcon.media {
+  background: linear-gradient(135deg, #ff9f1a, #753cff);
+}
+
+.genericHeroIcon.data {
+  background: linear-gradient(135deg, #19c56f, #2267f4);
+}
+
+.genericHeroIcon.life {
+  background: linear-gradient(135deg, #ff9f1a, #19c56f);
+}
+
+.genericCategoryLine {
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.genericHero h1 {
+  margin: 0 0 10px;
+  color: #111b34;
+  font-size: clamp(32px, 3.8vw, 46px);
+  line-height: 1.08;
+  font-weight: 950;
+}
+
+.genericHero p {
+  max-width: 780px;
+  margin: 0 0 14px;
+  color: #4e5d79;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 650;
+}
+
+.genericRunner,
+.genericSeo,
+.genericFaq {
+  margin-top: 18px;
+  padding: 22px;
+}
+
+.genericRunner .genericTool > p {
+  margin-top: 0;
+}
+
+.genericRunner .genericTool textarea {
+  min-height: 190px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  line-height: 1.55;
+}
+
+.genericRunner .genericTool pre {
+  max-height: 360px;
+}
+
+.genericSeo h2,
+.genericFaq h2 {
+  margin: 0 0 16px;
+  color: #14213c;
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.genericSeoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.genericSeoGrid article {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.genericSeoGrid svg {
+  color: var(--primary);
+}
+
+.genericSeoGrid h3 {
+  margin: 10px 0 7px;
+  color: #182742;
+  font-size: 16px;
+}
+
+.genericSeoGrid p {
+  margin: 0;
+  color: #596985;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.blockTags {
+  margin: 12px 0;
+}
+
+.relatedToolList {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.relatedToolList button {
+  width: 100%;
+  min-height: 38px;
+  padding: 9px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #34415d;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #f8fbff;
+  font-weight: 850;
+}
+
+.relatedToolList svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}

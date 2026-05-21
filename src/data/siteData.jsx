@@ -26,10 +26,13 @@ import {
   Pencil,
   RefreshCw,
   Search,
+  ShieldCheck,
   Sparkles,
+  Star,
   Table2,
   Wand2
 } from "../shared/icons.js";
+import { expandedToolCatalog } from "./expandedTools.js";
 
 const categoryIcons = {
   all: Boxes,
@@ -45,7 +48,7 @@ const categoryIcons = {
   life: Sparkles
 };
 
-const categories = [
+const baseCategories = [
   { id: "all", count: "2000+" },
   { id: "ai", count: "286" },
   { id: "seo", count: "158" },
@@ -59,7 +62,7 @@ const categories = [
   { id: "life", count: "142" }
 ];
 
-const toolGroups = [
+const baseToolGroups = [
   {
     id: "ai",
     desc: "AI写作、绘画、对话、翻译、语音等智能工具，释放生产力",
@@ -174,6 +177,78 @@ const toolGroups = [
   }
 ];
 
+const iconRegistry = {
+  Archive,
+  BadgeCheck,
+  BarChart3,
+  Bolt,
+  BookOpen,
+  Bot,
+  Boxes,
+  Braces,
+  Check,
+  Clock3,
+  Code2,
+  Copy,
+  Download,
+  FileArchive,
+  FileImage,
+  FileText,
+  Globe2,
+  Image,
+  Languages,
+  Layers3,
+  Link2,
+  Lock,
+  Mic,
+  MonitorSmartphone,
+  Pencil,
+  RefreshCw,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Table2,
+  Wand2
+};
+
+const materializeExpandedTool = ({ iconKey, ...tool }) => ({
+  ...tool,
+  icon: iconRegistry[iconKey] || categoryIcons[tool.category] || Sparkles
+});
+
+const expandedToolsByCategory = expandedToolCatalog.reduce((groups, tool) => {
+  if (!tool?.category || !tool?.route) return groups;
+  const bucket = groups[tool.category] || [];
+  if (!bucket.some((existing) => existing.route === tool.route || existing.name === tool.name)) {
+    bucket.push(tool);
+  }
+  return {
+    ...groups,
+    [tool.category]: bucket
+  };
+}, {});
+
+const toolGroups = baseToolGroups.map((group) => {
+  const existingRoutes = new Set(group.tools.map((tool) => tool.route).filter(Boolean));
+  const existingNames = new Set(group.tools.map((tool) => tool.name));
+  const expandedTools = (expandedToolsByCategory[group.id] || [])
+    .filter((tool) => !existingRoutes.has(tool.route) && !existingNames.has(tool.name))
+    .map(materializeExpandedTool);
+
+  return {
+    ...group,
+    tools: [...group.tools, ...expandedTools]
+  };
+});
+
+const categoryToolCounts = Object.fromEntries(toolGroups.map((group) => [group.id, group.tools.length]));
+const totalToolCount = toolGroups.reduce((sum, group) => sum + group.tools.length, 0);
+const categories = baseCategories.map((category) => ({
+  ...category,
+  count: category.id === "all" ? `${totalToolCount}` : `${categoryToolCounts[category.id] || 0}`
+}));
+
 const pdfSubTools = ["PDF转Word", "PDF转Excel", "PDF转PPT", "PDF转图片", "Word转PDF", "PDF合并", "PDF拆分", "PDF压缩", "PDF加密", "PDF解密"];
 const allTools = toolGroups.flatMap((group) => group.tools.map((tool) => ({ ...tool, category: group.id })));
 const pdfSubToolObjects = pdfSubTools.map((name) => ({
@@ -226,6 +301,75 @@ const genericToolSamples = {
   "单位换算器": "10 km to mi",
   "代码格式化": "function hello(){console.log('ToolBox Hub')}",
   "关键词查询": "在线工具站\nPDF转Word\nAI工具",
+  "AI 标题生成器": "在线工具站增长",
+  "AI 摘要生成器": "我们要做一个覆盖 PDF、图片、SEO、开发和办公场景的在线工具站。每个工具都需要独立落地页，方便 SEO 收录，同时页面要简单易用。",
+  "AI 邮件助手": "subject: 项目进度同步\ngoal: 本周已完成 SEO 落地页和工具逻辑扩展，需要确认下一批优先级",
+  "AI 周报生成器": "完成 146 个工具落地页\n补齐 SEO sitemap\n新增 CSV 和房贷计算器逻辑",
+  "AI 小红书文案": "在线工具站提效",
+  "AI 短视频脚本": "3 分钟介绍在线工具站",
+  "AI 面试题生成器": "前端工程师",
+  "AI 学习计划": "4 周掌握 React 工具站开发",
+  "AI 代码解释器": "function sum(a,b){return a+b}",
+  "Meta 标签生成器": "title: 智用工具站\ndescription: 精选高效在线工具\nkeywords: 在线工具,SEO,PDF",
+  "Robots.txt 生成器": "/admin\n/private\nhttps://newaitools.app/sitemap.xml",
+  "Sitemap 生成器": "https://newaitools.app/\nhttps://newaitools.app/tools/json-formatter",
+  "Slug 生成器": "Best Online Tools for SEO and PDF",
+  "标题长度检测": "智用工具站 - 免费在线工具大全",
+  "描述长度检测": "智用工具站收录高效好用的在线工具，覆盖 PDF、图片、SEO、开发、文本处理和日常效率场景。",
+  "关键词密度分析": "在线工具 SEO 工具 PDF 工具 在线工具 图片工具 SEO 工具",
+  "Open Graph 预览": "title: 智用工具站\ndescription: 免费在线工具大全\nurl: https://newaitools.app\nimage: https://newaitools.app/og.png",
+  "Schema 标记生成器": "name: 智用工具站\ndescription: 免费在线工具大全\nurl: https://newaitools.app",
+  "URL 参数清理": "https://example.com/page?utm_source=newsletter&utm_campaign=spring&id=42&fbclid=abc",
+  "URL 编码解码": "https://example.com/?q=在线工具",
+  "HTML 实体转义": "<strong>ToolBox Hub</strong>",
+  "JWT 解码器": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.sig",
+  "哈希生成器": "ToolBox Hub",
+  "Base64 转图片": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=",
+  "Favicon 生成器": "/favicon.png",
+  "SVG 压缩": "<svg width=\"100\" height=\"100\">\n  <!-- comment -->\n  <rect width=\"100\" height=\"100\" fill=\"red\" />\n</svg>",
+  "YAML 转 JSON": "name: ToolBox Hub\ncount: 146\nactive: true",
+  "JSON 转 YAML": "{\"name\":\"ToolBox Hub\",\"count\":146,\"active\":true}",
+  "XML 格式化": "<root><tool>JSON</tool><score>4.8</score></root>",
+  "SQL 格式化": "select name,score from tools where category='seo' order by score desc",
+  "CSS 压缩": "body { color: red; padding: 16px; }",
+  "JavaScript 压缩": "function hello() { console.log('ToolBox Hub'); }",
+  "Cron 表达式解析": "*/5 * * * *",
+  "User-Agent 解析": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+  "CSV 清洗": "name, value\n A , 1\n A , 1\nB,2",
+  "CSV 排序": "name,value\nB,2\nA,1",
+  "CSV 合并": "name,value\nA,1\n---\nname,value\nB,2",
+  "JSON 路径提取": "user.name\n{\"user\":{\"name\":\"Ada\"}}",
+  "JSON Schema 生成": "{\"name\":\"Ada\",\"age\":3}",
+  "表格转 Markdown": "name,value\nA,1",
+  "Markdown 转表格": "| name | value |\n| --- | --- |\n| A | 1 |",
+  "列表交集差集": "a\nb\n---\nb\nc",
+  "数字序列生成器": "1 10 2",
+  "数据透视摘要": "category,amount\nAI,3\nAI,4\nSEO,2",
+  "会议纪要生成器": "确认首页分类优先级\n补齐工具真实逻辑\n下周验证移动端体验",
+  "OKR 生成器": "提升在线工具站搜索流量和留存",
+  "甘特图数据生成": "设计工具目录\n开发落地页\n补齐测试\n上线验证",
+  "发票抬头整理": "company: 智用科技有限公司\ntax: 91310000000000000X\naddress: 上海市示例路 1 号\nbank: 招商银行 123456",
+  "简历要点优化": "负责工具站 SEO 落地页\n优化前端性能\n搭建自动化测试",
+  "邮件签名生成器": "name: 张三\ntitle: 产品经理\ncompany: 智用科技\nphone: 13800000000\nemail: zhangsan@example.com",
+  "请假条生成器": "name: 张三\ndate: 2026-05-22\nreason: 家庭事务需要处理",
+  "日报生成器": "完成工具目录扩展\n修复路由问题\n补充测试用例",
+  "标点格式化": "hello, world! 这是 一个 test ?",
+  "繁简转换": "在线工具转换",
+  "拼音转换": "在线工具",
+  "Lorem Ipsum 生成器": "3",
+  "敏感词检测": "这是一段需要检测是否包含敏感词的文本",
+  "字幕格式转换": "1\n00:00:00,000 --> 00:00:03,000\n大家好",
+  "视频标题生成器": "在线工具站",
+  "播客大纲生成": "独立开发工具站",
+  "音频转写清理": "嗯 今天我们就是 来聊聊 在线工具站 然后然后 看看怎么做",
+  "B站标题助手": "在线工具站实战",
+  "YouTube 标签生成": "online tools seo productivity",
+  "章节时间轴生成": "开场\n工具目录\nSEO 落地页\n总结",
+  "番茄钟": "25 5 4",
+  "习惯打卡": "阅读\n运动\n复盘",
+  "房贷计算器": "100 4.2 30",
+  "汇率换算器": "100 7.2",
+  "小费计算器": "100 18 2",
   "文档翻译": "欢迎使用智用工具站",
   default: "在这里输入要处理的内容，点击运行工具。"
 };

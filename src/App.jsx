@@ -5,15 +5,19 @@ import { useI18n } from "./i18n/I18nProvider.jsx";
 import { usePageSeo } from "./shared/utils.js";
 import { Footer, Header, LoginForm, MessagePanel, Modal, ArticleView, SitePage, SubmitToolForm } from "./shared/components/Layout.jsx";
 import { HomePage } from "./pages/HomePage.jsx";
-import { getToolRoute, routeFromHash, routeToHash } from "./tools/registry.jsx";
+import { getCategoryRoute, getCategoryRouteByCategory, getToolRoute, getToolRouteByTool, routeFromLocation, routeToPath } from "./tools/registry.jsx";
 import "./styles/index.css";
 
 const GenericTool = React.lazy(() => import("./tools/generic/GenericTool.jsx").then((module) => ({ default: module.GenericTool })));
 
+function categoryFromRoute(routeId) {
+  return getCategoryRoute(routeId)?.categoryId || "all";
+}
+
 function App() {
   const { locale } = useI18n();
-  const [route, setRouteState] = useState(() => routeFromHash());
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [route, setRouteState] = useState(() => routeFromLocation());
+  const [activeCategory, setActiveCategoryState] = useState(() => categoryFromRoute(routeFromLocation()));
   const [query, setQuery] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [toast, setToast] = useState("");
@@ -21,7 +25,7 @@ function App() {
   const [savedTools, setSavedTools] = useState(() => new Set(JSON.parse(localStorage.getItem("savedTools") || "[]")));
   const [genericTool, setGenericTool] = useState(null);
   const activeToolRoute = getToolRoute(route);
-  usePageSeo(route, locale);
+  usePageSeo(route, locale, activeToolRoute);
 
   const notify = React.useCallback((message) => {
     setToast(message);
@@ -46,13 +50,29 @@ function App() {
 
   const setRoute = React.useCallback((next) => {
     setRouteState(next);
-    window.location.hash = routeToHash(next);
+    setActiveCategoryState(categoryFromRoute(next));
+    const nextPath = routeToPath(next);
+    if (window.location.pathname !== nextPath || window.location.hash) {
+      window.history.pushState({ route: next }, "", nextPath);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const setActiveCategory = React.useCallback((nextCategory) => {
+    setActiveCategoryState(nextCategory);
+    const categoryRoute = getCategoryRouteByCategory(nextCategory);
+    const nextRoute = categoryRoute?.id || "home";
+    const nextPath = categoryRoute?.path || "/";
+    setRouteState(nextRoute);
+    if (window.location.pathname !== nextPath || window.location.hash) {
+      window.history.pushState({ route: nextRoute }, "", nextPath);
+    }
+  }, []);
+
   const openTool = React.useCallback((tool) => {
-    if (tool.route) {
-      setRoute(tool.route);
+    const routeForTool = getToolRouteByTool(tool);
+    if (routeForTool) {
+      setRoute(routeForTool.id);
       return;
     }
     setGenericTool(tool);
@@ -60,9 +80,22 @@ function App() {
   }, [setRoute]);
 
   React.useEffect(() => {
-    const onHashChange = () => setRouteState(routeFromHash());
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    const onLocationChange = () => {
+      const nextRoute = routeFromLocation();
+      setRouteState(nextRoute);
+      setActiveCategoryState(categoryFromRoute(nextRoute));
+    };
+    const initialRoute = routeFromLocation();
+    const currentPath = routeToPath(initialRoute);
+    if (window.location.pathname !== currentPath || window.location.hash) {
+      window.history.replaceState({ route: initialRoute }, "", currentPath);
+    }
+    window.addEventListener("popstate", onLocationChange);
+    window.addEventListener("hashchange", onLocationChange);
+    return () => {
+      window.removeEventListener("popstate", onLocationChange);
+      window.removeEventListener("hashchange", onLocationChange);
+    };
   }, []);
 
   const visibleGroups = useMemo(() => {
@@ -87,7 +120,7 @@ function App() {
         />
       ) : activeToolRoute ? (
         <React.Suspense fallback={<div className="emptyState panel">工具加载中...</div>}>
-          <activeToolRoute.Component setRoute={setRoute} notify={notify} setModal={setModal} toggleSave={toggleSave} savedTools={savedTools} openTool={openTool} />
+          <activeToolRoute.Component tool={activeToolRoute.tool} setRoute={setRoute} notify={notify} setModal={setModal} toggleSave={toggleSave} savedTools={savedTools} openTool={openTool} />
         </React.Suspense>
       ) : (
         <HomePage

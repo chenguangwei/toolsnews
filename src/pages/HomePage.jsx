@@ -39,6 +39,8 @@ function HomePage({ query, setQuery, activeCategory, setActiveCategory, visibleG
     }))
     .filter((group) => group.tools.length);
   const displayedGroups = showAll ? filteredGroups : filteredGroups.slice(0, 6);
+  const activeGroup = activeCategory === "all" ? null : filteredGroups.find((group) => group.id === activeCategory);
+  const canToggleMore = showAll || filteredGroups.length > displayedGroups.length;
 
   const runSearch = () => {
     if (!query.trim()) {
@@ -59,19 +61,40 @@ function HomePage({ query, setQuery, activeCategory, setActiveCategory, visibleG
           <ActionPanel icon={History} title={t.favorites} body="登录后同步收藏与使用历史" cta={t.login} onAction={() => setModal({ type: "login", title: t.login })} />
         </aside>
         <div className="toolSections">
+          {activeGroup && (
+            <section className="categoryLandingIntro panel">
+              <span className={`groupIcon ${activeGroup.id}`}>
+                {React.createElement(categoryIcons[activeGroup.id], { size: 22 })}
+              </span>
+              <div>
+                <h2>{cat[activeGroup.id]}大全</h2>
+                <p>{activeGroup.desc}。当前分类收录 {activeGroup.tools.length} 个在线工具，全部支持独立页面、移动端访问和即时使用。</p>
+              </div>
+            </section>
+          )}
           <div className="breadcrumb">
             <span>{t.breadcrumbHome}</span>
             <span>/</span>
-            <strong>{t.allTools}</strong>
+            <strong>{activeGroup ? cat[activeGroup.id] : t.allTools}</strong>
           </div>
           {displayedGroups.map((group) => (
-            <ToolGroup key={group.id} group={group} cat={cat} t={t} setActiveCategory={setActiveCategory} openTool={openTool} />
+            <ToolGroup
+              key={group.id}
+              group={group}
+              cat={cat}
+              t={t}
+              isCondensed={activeCategory === "all" && !normalizedQuery}
+              setActiveCategory={setActiveCategory}
+              openTool={openTool}
+            />
           ))}
           {!displayedGroups.length && <div className="emptyState panel">没有找到相关工具，请换一个关键词。</div>}
-          <button className="loadMore" onClick={() => { setShowAll((value) => !value); notify(showAll ? "已收起工具列表" : "已展开更多工具"); }}>
-            {showAll ? "收起工具" : t.loadMore}
-            <ChevronDown size={17} />
-          </button>
+          {canToggleMore && (
+            <button className="loadMore" onClick={() => { setShowAll((value) => !value); notify(showAll ? "已收起工具列表" : "已展开更多工具"); }}>
+              {showAll ? "收起工具" : t.loadMore}
+              <ChevronDown size={17} />
+            </button>
+          )}
         </div>
       </section>
       <ServiceStrip t={t} />
@@ -178,7 +201,9 @@ function ActionPanel({ icon: Icon, title, body, cta, onAction }) {
   );
 }
 
-function ToolGroup({ group, cat, t, setActiveCategory, openTool }) {
+function ToolGroup({ group, cat, t, isCondensed, setActiveCategory, openTool }) {
+  const visibleTools = isCondensed ? group.tools.slice(0, 12) : group.tools;
+
   return (
     <section className="toolGroup">
       <header className="groupHeader">
@@ -189,10 +214,10 @@ function ToolGroup({ group, cat, t, setActiveCategory, openTool }) {
           <h2>{cat[group.id]}</h2>
           <p>{group.desc}</p>
         </div>
-        <button onClick={() => { setActiveCategory(group.id); scrollToSelector(".contentShell"); }}>{t.viewAll}（{categories.find((item) => item.id === group.id)?.count}）</button>
+        <button onClick={() => { setActiveCategory(group.id); scrollToSelector(".contentShell"); }}>{t.viewAll}（{group.tools.length}）</button>
       </header>
       <div className="toolGrid">
-        {group.tools.map((tool) => (
+        {visibleTools.map((tool) => (
           <ToolCard key={tool.name} tool={tool} t={t} onUse={() => openTool(tool)} />
         ))}
       </div>
